@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>OA Login...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="favicon.png">
+</head>
+
+<body>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="./config.js"></script>
+
+  <script>
+    if (!Object.assign) {
+      Object.assign = function (target, source) {
+        for (var k in source) {
+          if (Object.hasOwnProperty.call(source, k)) {
+            target[k] = source[k]
+          }
+        }
+
+        return target
+      }
+    }
+
+    // eval hack
+    // if this page visit, always login through this page
+    // see src/local/latest-signin.js, src/store/modules/user/index.js
+    // just set default type with ADMIN
+    const key = 'IOT@@LATEST_SIGNIN'
+    const item = JSON.parse(localStorage.getItem(key) || '{}')
+
+    localStorage.setItem(key, JSON.stringify(Object.assign(item, { type: 'ADMIN' })))
+
+    const prefix = window.usrConfig.prefix
+    const urls = window.usrConfig.urls
+
+    // source from vue-router
+    function parseQuery(query) {
+      const res = {}
+
+      query = query.trim().replace(/^(\?|#|&)/, '')
+
+      if (!query) {
+        return res
+      }
+
+      const decode = decodeURIComponent
+
+      query.split('&').forEach(function (param) {
+        const parts = param.replace(/\+/g, ' ').split('=')
+        const key = decode(parts.shift())
+        const val = parts.length > 0 ? decode(parts.join('=')) : null
+
+        if (res[key] === undefined) {
+          res[key] = val
+        } else if (Array.isArray(res[key])) {
+          res[key].push(val)
+        } else {
+          res[key] = [res[key], val]
+        }
+      })
+
+      return res
+    }
+
+    const post = function (url, params) {
+      return $.ajax({
+        url: url,
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(params)
+      })
+      .then(function (res) {
+        if (res.c === 0) {
+          return res.d
+        }
+
+        throw Error(res.message)
+      })
+    }
+
+    const checkCurrentUser = function () {
+      return post(prefix + urls.IUserService.getCurrentUser, {})
+    }
+
+    const getAuthCenterRedirectUrl = function () {
+      return post(prefix + urls.ILoginService.getOaRedirectUrl, {})
+    }
+
+    const login = function (token) {
+      return post(prefix + urls.ILoginService.loginByOA, { token: token })
+    }
+
+    const LOGIN_SUCCESS_CODE = 'OK'
+
+    const LOGIN_ERROR_CODES = {
+      INVALID_VERIFY_CODE: '验证码错误',
+      USER_DOES_NOT_EXISTS: '用户名不存在',
+      INVALID_BWUC_TOKEN: '无效的统一认证令牌',
+      INVALID_USER_STATUS: '无效的用户状态'
+    }
+
+    const run = function () {
+      checkCurrentUser()
+        .then(function (user) {
+          if (user && user.name) {
+            return location.replace(location.href.replace(/oa-login.html(.*)?$/, ''))
+          }
+
+          throw Error('no user')
+        })
+        .catch(function () {
+          const query = parseQuery(location.href.slice(location.href.indexOf('?')))
+
+          if (query.token) {
+            return login(query.token)
+              .then(function (res) {
+                if (res === LOGIN_SUCCESS_CODE) {
+                  return location.replace(location.href.replace(/oa-login.html(.*)?$/, ''))
+                } else {
+                  throw Error(LOGIN_ERROR_CODES[res] || res)
+                }
+              })
+              .catch(function (err) {
+                alert('OA用户登录失败' + (err.message || ''))
+              })
+          }
+
+          getAuthCenterRedirectUrl()
+            .then(function (url) {
+              location.replace(url + '&redirecturl=' + location.href)
+            })
+            .catch(function (err) {
+              alert('获取鉴权平台登录地址失败' + (err.message || ''))
+            })
+        })
+    }
+
+    run()
+  </script>
+</body>
+
+</html>

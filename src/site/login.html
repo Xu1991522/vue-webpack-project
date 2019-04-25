@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>物联网管理平台</title>
+    <link rel="shortcut icon" href="favicon.png">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js">
+    </script>
+    <style>
+        body,
+        html {
+            padding: 0;
+            margin: 0;
+        }
+
+        .login-main-container {
+            width: 100%;
+            height: 100vh;
+            background: url("./static/login-bg.png") no-repeat 0 0;
+            background-size: 100% 100%;
+        }
+
+        .login-title-logo {
+            position: fixed;
+            left: 100px;
+            top: 17px;
+            width: 145px;
+            height: 45px;
+        }
+
+        .nav-list a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .nav-list {
+            width: 800px;
+            height: 60px;
+            line-height: 60px;
+            position: fixed;
+            right: 100px;
+            top: 20px;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .nav-list-item {
+            margin-right: 55px;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .nav-list-item:hover {
+            color: #038ae3;
+        }
+
+        .nav-list-item a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .nav-list-item:last-child {
+            color: #038ae3;
+            background: url('./static/QQ.png') no-repeat 0 18px;
+            width: 100px;
+            height: 60px;
+            line-height: 60px;
+            background-size: 25px 25px;
+            padding-left: 35px;
+            margin-right: 0;
+        }
+
+        .login-input-container {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            padding: 10px 24px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid #697582;
+            box-shadow: 0 0 3px 3px #515b68;
+        }
+
+        .inner-input-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-title {
+            top: 6px;
+            color: #fff;
+            font-size: 17px;
+        }
+
+        .input-container {
+            height: 50px;
+            background: #fff;
+            border-radius: 5px;
+            line-height: 50px;
+            border: 1px solid #fff;
+            box-sizing: border-box;
+        }
+
+        .input-container-active {
+            border: 1px solid #038ae3;
+        }
+
+        .username-container {
+            width: 330px;
+        }
+
+        .password-container {
+            width: 330px;
+        }
+
+        .checkcode-container {
+            width: 166px;
+        }
+
+        .login-button {
+            width: 330px;
+            height: 45px;
+            line-height: 45px;
+            background: #038ae3;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .icon-style {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translate(0, -50%);
+            border-right: 1px solid #d9d9d9;
+            height: 33px;
+            width: 34px;
+            background-size: 23px 23px;
+        }
+
+        .user-icon {
+            background: url("./static/user-icon.png") no-repeat 0 center;
+        }
+
+        .password-icon {
+            background: url("./static/password-icon.png") no-repeat 0 center;
+        }
+
+        .checkcode-icon {
+            background: url("./static/checkcode-icon.png") no-repeat 0 center;
+        }
+
+        .eye-icon-closed {
+            background: url("./static/eyeclosed-icon.png") no-repeat 0 center;
+            left: 294px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .eye-icon-open {
+            background: url("./static/eyeopen-icon.png") no-repeat 0 center;
+            left: 294px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .input-style {
+            border: none;
+            outline: none;
+            position: absolute;
+            left: 60px;
+            top: 50%;
+            color: #323232;
+            transform: translate(0, -50%);
+            font-size: 14px;
+            height: 100%;
+            width: 220px;
+            background: rgba(255, 255, 255, 0);
+        }
+
+        .checkcodeimg {
+            width: 90px;
+            height: 45px;
+            position: absolute;
+            left: 180px;
+            top: 50%;
+            transform: translate(0, -50%);
+            cursor: pointer
+        }
+
+        .changeone {
+            position: absolute;
+            color: #bbbcbe;
+            left: 280px;
+            cursor: pointer;
+            word-break: keep-all;
+            font-size: 14px;
+        }
+
+        .remind-text {
+            position: absolute;
+            left: 3px;
+            bottom: -15px;
+            font-size: 10px;
+            color: #d73f3f;
+            font-weight: bold;
+            line-height: 10px;
+            padding-left: 15px;
+            background: url('./static/alert-icon.png') no-repeat 0 0;
+            height: 10px;
+            width: 300px;
+            background-size: 10px 10px;
+            display: none;
+        }
+
+        .error-layer {
+            height: 50px;
+            background: #fff;
+            border-radius: 5px;
+            line-height: 50px;
+            background: rgba(255, 217, 217, 1);
+            border: 1px solid #d73f3f;
+            box-sizing: border-box;
+        }
+
+        .popup__wrapper {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+
+            display: none;
+        }
+
+        .popup {
+            background: #fff;
+            min-height: 200px;
+            min-width: 400px;
+            background: #fff;
+            border-radius: 4px;
+            box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1004;
+        }
+
+        .popup__top {
+            position: relative;
+        }
+
+        .popup__title {
+            height: 40px;
+            line-height: 40px;
+            background: #fff;
+            color: #333;
+            font-size: 18px;
+            text-indent: 20px;
+            margin: 0;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .popup__close {
+            font-style: normal;
+            display: block;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 10px;
+            cursor: pointer;
+
+            display: none;
+        }
+
+        .popup__body {
+            margin: 10px 20px;
+            color: #444;
+        }
+
+        .form__item {
+            min-height: 30px;
+            padding-bottom: 5px;
+            line-height: 25px;
+            position: relative;
+        }
+
+        .form__label {
+            font-size: 13px;
+            display: block;
+            height: 30px;
+            line-height: 30px;
+            color: #444;
+        }
+
+        .form__input {
+            display: inline-block;
+            width: 100%;
+            height: 30px;
+            line-height: 30px;
+            border: 1px solid #e0e5e9;
+            border-radius: 3px;
+            text-indent: 5px;
+            font-size: 12px;
+            color: #444;
+        }
+
+        .form__error {
+            height: 30px;
+            line-height: 30px;
+            color: #d73f3f;
+            font-size: 13px;
+        }
+
+        .form__control {
+            height: 64px;
+            line-height: 64px;
+            text-align: right;
+            padding: 0 20px;
+        }
+
+        .btn {
+            font-size: 12px;
+            display: inline-block;
+            border-radius: 3px;
+            box-sizing: border-box;
+            line-height: 1;
+            text-align: center;
+            cursor: pointer;
+
+            padding: 9px 15px;
+            font-size: 12px;
+            border-radius: 3px;
+        }
+
+        .btn+.btn {
+            margin-left: 10px;
+        }
+
+        .btn__confirm {
+            background: #038ae3;
+            border: 1px solid #038ae3;
+            color: #fff;
+        }
+
+        .btn__cancel {
+            background: #fff;
+            border: 1px solid #dcdfe6;
+            border-color: #dcdfe6;
+            color: #606266;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-main-container">
+        <img src="" class="login-title-logo" alt="">
+        <div class="nav-list" id="nav-list">
+            <div class="nav-list-item">
+                <a href="http://iot.combmobile.com" target="_blank">首页</a>
+            </div>
+            <div class="nav-list-item">
+                <a href="http://iot.combmobile.com/product.html" target="_blank">产品介绍</a>
+            </div>
+            <div class="nav-list-item">
+                <a href="http://iot.combmobile.com/application.html" target="_blank">物联网应用</a>
+            </div>
+            <div class="nav-list-item">
+                <a href="http://iot.combmobile.com/cooperationCase.html" target="_blank">合作案例</a>
+            </div>
+            <div class="nav-list-item">
+                <a href="http://iot.combmobile.com/aboutUs.html" target="_blank">关于我们</a>
+            </div>
+            <div class="nav-list-item">
+                <a href="http://wpa.qq.com/msgrd?v=3&uin=781716375&site=qq&menu=yes" target="_blank">联系我们</a>
+            </div>
+        </div>
+        <div class="login-input-container">
+            <div class="inner-input-item input-title">用户登录</div>
+            <div class="inner-input-item input-container username-container">
+                <div class="icon-style user-icon"></div>
+                <input type="text" class="input-style" id="user" placeholder="请输入用户名">
+                <div class="remind-text" id="user-remindtext">请输入用户名</div>
+            </div>
+            <div class="inner-input-item input-container password-container">
+                <div class="icon-style password-icon"></div>
+                <input type="password" class="input-style" id="password" placeholder="请输入密码">
+                <div id="eye-dom" class="icon-style eye-icon-closed" onclick="eyeshandle()"></div>
+                <div class="remind-text" id="password-remindtext">请输入密码</div>
+            </div>
+            <div class="inner-input-item input-container checkcode-container">
+                <div class="icon-style checkcode-icon"></div>
+                <input type="text" class="input-style" maxlength="4" id="checkcode" placeholder="请输入验证码" style="width:100px;">
+                <div class="remind-text" id="checkcode-remindtext">请输入验证码</div>
+                <img src="/portal-usr/vcode" alt="" class="checkcodeimg" id="checkcodeimg" onclick="refreshcheckcode()">
+                <div class="changeone" onclick="refreshcheckcode()">换一张</div>
+            </div>
+            <div class="inner-input-item login-button" onclick="submit()">登 录</div>
+
+            <div class="popup__wrapper reset-password__modal">
+                <div class="popup">
+                    <div class="popup__top">
+                        <p class="popup__title">修改密码</p>
+                        <i class="popup__close">X</i>
+                    </div>
+
+                    <div class="popup__body">
+                        <div class="form__item">
+                            <label class="form__label">新密码</label>
+                            <input type="password" class="form__input password__input">
+                        </div>
+                        <div class="form__item">
+                            <label class="form__label">确认新密码</label>
+                            <input type="password" class="form__input password__repeat">
+                        </div>
+                        <div class="form__error password__error"></div>
+                    </div>
+
+                    <div class="form__control">
+                        <a class="btn btn__cancel">取消</a>
+                        <a class="btn btn__confirm">确定</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./config.js"></script>
+    <script>
+        if (!Object.assign) {
+            Object.assign = function (target, source) {
+                for (var k in source) {
+                    if (Object.hasOwnProperty.call(source, k)) {
+                        target[k] = source[k]
+                    }
+                }
+
+                return target
+            }
+        }
+
+        $(document).ready(function () {
+            var domain = document.domain
+            if (domain !== 'iot-cust.combmobile.com' && domain !== 'iot.aetest.bwae.org' && domain !== 'iot.bwae.org' && domain !== 'localhost') {
+                $('#nav-list').attr('class', 'hidden')
+                $.ajax({
+                    url: srvConfig.prefix + srvConfig.urls.IHomeLogoManager.getLogoUrl,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        url: domain
+                    })
+                })
+                    .then(function (res) {
+                        if (res.d === 'appmedia') {
+                            $('.login-title-logo').attr('src', './static/appmedia-title.png');
+                        } else {
+                            $('.login-title-logo').attr('src', res.d);
+                        }
+                    });
+            } else {
+                if (domain === 'appmedia.com') {
+                    $('.login-title-logo').attr('src', './static/appmedia-title.png');
+                } else {
+                    $('.login-title-logo').attr('src', './static/login-title-logo.png');
+                }
+            }
+        });
+
+        // eval hack
+        // if this page visit, always login through this page
+        var key = 'IOT@@LATEST_SIGNIN';
+        var item = JSON.parse(localStorage.getItem(key) || '{}');
+
+        localStorage.setItem(key, JSON.stringify(Object.assign(item, { type: null })))
+
+        var LoginResultEnum = {
+            OK: '成功',
+            FAIL_TO_CREATE_SESSION: '创建会话失败',
+            CHANGE_DEFUL_PASSWORD: '登录成功请修改默认密码',
+            INVALID_VERIFY_CODE: '验证码错误',
+            INVALID_PASSWORD: '密码错误',
+            ERROR_PASSWORD: '密码不能和初始密码相同',
+            USER_DOES_NOT_EXISTS: '用户不存在',
+            INVALID_BWUC_TOKEN: '无效的统一认证令牌',
+            INVALID_USER_STATUS: '无效的用户状态',
+            INVALID_SESSION: '无效会话'
+        };
+
+        var res = Object.keys(LoginResultEnum).reduce(function (acc, x) {
+            acc.LoginResult[x] = x
+            acc.messages[x] = LoginResultEnum[x]
+
+            return acc;
+        }, { LoginResult: {}, messages: {} });
+
+        var LoginResult = res.LoginResult;
+        var messages = res.messages;
+
+        var modal = $('.reset-password__modal');
+
+        modal
+            .on('click', '.btn__confirm', function () {
+                var errorEl = $('.password__error')
+
+                var password = $('.password__input').val().trim();
+
+                if (!password) {
+                    return errorEl.html('请输入密码');
+                }
+
+                var repeat = $('.password__repeat').val().trim();
+
+                if (!repeat) {
+                    return errorEl.html('请确认新密码');
+                }
+
+                if (password !== repeat) {
+                    return errorEl.html('两次密码输入不一致');
+                }
+
+                $.ajax({
+                    url: usrConfig.prefix + usrConfig.urls.IUserService.updateDefaultPassword,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        loginName: $('#user').val(),
+                        password: password
+                    })
+                })
+                    .then(function (res) {
+                        var data = res.d;
+
+                        if (data !== 'OK') {
+                            return alert(messages[data]);
+                        }
+
+                        refreshcheckcode();
+
+                        modal.hide();
+                    }, function (err) {
+                        alert('网络错误');
+                    });
+            })
+            .on('click', '.btn__cancel, .popup__close', function () {
+                modal.hide();
+            });
+
+        // xugx1 111111
+        $(".input-container").on("click", function (event) {
+            if (event.target.nodeName === 'DIV' && event.target.className !== 'remind-text' && event.target.className !== 'changeone') {
+                $(event.target).addClass('input-container-active')
+                $(event.target).siblings().removeClass('input-container-active')
+            } else {
+                $(event.target).parent().addClass('input-container-active')
+                $(event.target).parent().siblings().removeClass('input-container-active')
+            }
+        });
+
+        var eyeopen = false;
+        // 显示密码
+        var eyeshandle = function () {
+            eyeopen = !eyeopen
+            if (eyeopen) {
+                // 密码可见
+                $('#eye-dom').addClass('eye-icon-open').removeClass('eye-icon-closed');
+                $('#password').prop('type', 'text');
+            } else {
+                // 密码不可见
+                $('#eye-dom').addClass('eye-icon-closed').removeClass('eye-icon-open');
+                $('#password').prop('type', 'password');
+            }
+        };
+
+        // ajax回调处理
+        var ajaxcallback = function (loginresponse) {
+            var data = loginresponse.d
+
+            if (data === LoginResult.OK) {
+                return location.replace(location.href.replace(/login.html(.*)?$/, ''))
+            }
+
+            if (data === LoginResult.CHANGE_DEFUL_PASSWORD) {
+                modal.show();
+
+                return refreshcheckcode()
+            }
+
+            if (data === LoginResult.INVALID_VERIFY_CODE) {
+                // 验证码错误
+                $('#checkcode-remindtext').html('验证码错误')
+                $('#checkcode-remindtext').css('display', 'block')
+
+                $('.username-container').removeClass('error-layer')
+                $('.password-container').removeClass('error-layer')
+                $('.checkcode-container').addClass('error-layer')
+
+                return refreshcheckcode()
+            }
+
+            if (data === LoginResult.INVALID_PASSWORD) {
+                // 密码错误
+                $('#password-remindtext').html('密码错误')
+                $('#password-remindtext').css('display', 'block')
+
+                $('.username-container').removeClass('error-layer')
+                $('.password-container').addClass('error-layer')
+                $('.checkcode-container').removeClass('error-layer')
+
+                return refreshcheckcode()
+            }
+
+            if (data === LoginResult.USER_DOES_NOT_EXISTS) {
+                // 用户名不存在
+                $('#user-remindtext').html('用户名不存在')
+                $('#user-remindtext').css('display', 'block')
+
+                $('.username-container').addClass('error-layer')
+                $('.password-container').removeClass('error-layer')
+                $('.checkcode-container').removeClass('error-layer')
+
+                return refreshcheckcode()
+            }
+
+            alert('登录失败(测试暂用提示)')
+        }
+        // 提交判断是否掉接口
+        var submit = function () {
+            // 用户名，密码，验证码不为空
+            if ($('#user').val() !== '' && $('#password').val() !== '' && $('#checkcode').val() !== '') {
+                // 均不为空调用接口
+                $('#user-remindtext').css('display', 'none')
+                $('#password-remindtext').css('display', 'none')
+                $('#checkcode-remindtext').css('display', 'none')
+                $.ajax({
+                    url: usrConfig.prefix + usrConfig.urls.ILoginService.loginByClient,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        userName: $('#user').val(),
+                        passWord: $('#password').val(),
+                        code: $('#checkcode').val(),
+                    })
+                }).then(ajaxcallback)
+            } else {
+                if ($('#user').val() === '') {
+                    $('#user-remindtext').html('请输入用户名')
+                    $('#user-remindtext').css('display', 'block')
+                } else {
+                    $('#user-remindtext').css('display', 'none')
+                }
+
+                if ($('#password').val() === '') {
+                    $('#password-remindtext').html('请输入密码')
+                    $('#password-remindtext').css('display', 'block')
+                } else {
+                    $('#password-remindtext').css('display', 'none')
+                }
+
+                if ($('#checkcode').val() === '') {
+                    $('#checkcode-remindtext').html('请输入验证码')
+                    $('#checkcode-remindtext').css('display', 'block')
+                } else {
+                    $('#checkcode-remindtext').css('display', 'none')
+                }
+            }
+
+        }
+
+        // 刷新验证码图片
+        var refreshcheckcode = function () {
+            $('#checkcodeimg').attr('src', "/portal-usr/vcode?" + Math.random());
+        }
+        // 回车登录
+        $('input').bind('keypress', function (event) {
+            if (event.keyCode == 13) {
+                submit()
+            }
+        });
+        
+    </script>
+</body>
+
+</html>

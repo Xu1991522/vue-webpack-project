@@ -1,0 +1,82 @@
+/*common style*/
+.el-menu-item-group__title {
+  padding: 0 0 0 20px;
+}
+.common-top-nav-row {
+  width: 100%;
+  margin: 5px 0;
+  height: 40px;
+  z-index: 99;
+}
+.el-select {
+  margin-right: 8px;
+  float: left;
+}
+table {
+  color: #666666;
+  font-size: 14px;
+}
+tr {
+  height: 30px !important;
+}
+.el-table td {
+  padding: 0 0;
+  border-right: 1px solid #dddddd;
+}
+.el-table th {
+  padding: 9px 0;
+  color: #333333;
+  background: #efefef;
+  font-weight: 400;
+  border-right: 1px solid #dddddd;
+}
+.el-pagination {
+  float: right;
+  margin-top: 10px;
+}
+.return-last-route {
+  width: 7px;
+  height: 12px;
+  line-height: 30px;
+  text-align: center;
+  display: inline-block;
+  background: url('./../assets/return-icon.png') no-repeat 0 0 #fff;
+  background-size: 100% 100%;
+  border: 1px solid;
+}
+.el-tabs__content {
+  overflow: visible;
+}
+.el-tabs__content:after {
+  display: block;
+  clear: both;
+  content: '';
+  visibility: hidden;
+  height: 0;
+}
+.el-form-item.is-required .el-form-item__label:before {
+  margin-left: -1em;
+  margin-right: 5px;
+}
+
+.iot__form .el-form-item {
+  margin-bottom: 10px
+}
+
+.iot__form .el-form-item__error--inline,
+.iot__form .el-form-item__error {
+  top: auto;
+  left: auto;
+  display: inline-block;
+  margin-left: 10px;
+  position: absolute;
+  right: -320px;
+  width: 300px;
+  text-align: left;
+  margin-top: 10px;
+}
+
+.iot__form .el-form-item.is-success .el-input__inner,
+.iot__form .el-form-item.is-success .el-input__inner:focus {
+  border-color: #dcdfe6;
+}
